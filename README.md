@@ -1,6 +1,22 @@
 # Doctor Intelligent Tool for Clinical Help (Dr. Itch)
 A Conversational AI Framework for Medical Education: Integrating Literature, Clinical Data, and Real-Time Research
 
+This is the instruction to setup Dr. Itch on your local environement, the whole setup contains 3 main components: 
+1. N8N Docker Container
+2. OpenWebUI Docker Containers 
+3. Python script to sync the eHospital Doctor Login information to OpenWebUI.
+
+
+Overall steps that you should do: 
+1. Make 2 containers up and running 
+2. Import 3 N8N workflows into N8N container. 
+3. Ensure 3 workflow will work.
+4. Access OpenWebUI container.
+5. Import the n8n_integration_function into Admin Setting/Function. 
+6. Enable Chat Model from N8N. 
+7. Sync the Login credential from ehospital. 
+
+
 ## Installation
 
 ### Prerequisites
@@ -9,16 +25,59 @@ A Conversational AI Framework for Medical Education: Integrating Literature, Cli
 - Docker and Docker Compose
 - MySQL database access
 
-### 1. Clone the Repository
+### 1. Make 2 containers up and running
 
 ```bash
-git clone <repository-url>
+git clone https://github.com/ngohuuduc/dr_itch
 cd dr_itch
 ```
+#### Docker env setup 
 
-### 2. Environment Setup
 
-Create a `.env` file in the root directory with your database configuration:
+Create the required external Docker network:
+
+```bash
+docker network create shared-net
+docker compose pull 
+```
+
+#### Start Services
+
+Launch the Docker services:
+
+```bash
+docker compose up -d
+```
+
+This will start:
+- **N8n Workflow Automation** on port 5678
+- **Open WebUI** on port 3200
+
+### 4. Access the Application
+
+- **Open WebUI**: http://localhost:3200
+- **N8n**: http://localhost:5678  
+You can configure your custom domain.
+
+### Configuration Notes
+
+#### N8n Configuration
+- Host: `localhost` or your custom domain. 
+- Protocol: HTTPS
+- Max payload size: 50MB 
+- Community packages enabled
+
+#### Open WebUI Configuration
+- Runs on port 8080 inside container (mapped to 3200 on host)
+- SQLite database mounted from host at `/root/openwebui-docker/webui.db`
+- Connected to host network for internal services access
+
+### 3. eHospital Data Sync 
+
+
+### 6. eHospital Data Sync 
+
+Create a `.env` file in the root directory with ehospital MySQL database setup. There is an example file that you can copy and edit. 
 
 ```env
 DB_HOST=your_mysql_host
@@ -28,7 +87,7 @@ DB_USERNAME=your_username
 DB_PASSWORD=your_password
 ```
 
-### 3. Python Dependencies
+##### Python Dependencies
 
 Install the required Python packages:
 
@@ -36,32 +95,10 @@ Install the required Python packages:
 pip install -r requirements.txt
 ```
 
-Or install individual packages:
 
-```bash
-pip install mysql-connector-python pandas sqlalchemy python-dotenv passlib
-```
 
-### 4. Docker Network Setup
-
-Create the required external Docker network:
-
-```bash
-docker network create shared-net
-```
-
-### 5. Database Preparation
-
-Ensure your MySQL database contains the required `doctors_registration` table in the `PRD01` schema with the following columns:
-- `EmailId`
-- `password`
-- `Fname`
-- `Lname`
-
-### 6. Initial Data Sync
-
-#### prior to run the script. please locate the pre-created database webui.db 
-default username/password for Adminin
+##### prior to run the script. please locate the pre-created database webui.db 
+OpenWebUI default username/password for Adminin
 
 - username: admin@test.ca
 - password: dti6302
@@ -79,37 +116,6 @@ This script will:
 - Create/update SQLite database (`webui.db`)
 - Sync user data for the application
 
-### 7. Start Services
-
-Launch the Docker services:
-
-```bash
-docker-compose up -d
-```
-
-This will start:
-- **N8n Workflow Automation** on port 5678
-- **Open WebUI** on port 3200
-
-### 8. Access the Application
-
-- **Open WebUI**: http://localhost:3200
-- **N8n**: http://localhost:5678  
-You can configure your custom domain.
-
-### Configuration Notes
-
-#### N8n Configuration
-- Host: `n8n.parainsight.com`
-- Protocol: HTTPS
-- Timezone: Asia/Ho_Chi_Minh
-- Max payload size: 50MB
-- Community packages enabled
-
-#### Open WebUI Configuration
-- Runs on port 8080 inside container (mapped to 3200 on host)
-- SQLite database mounted from host at `/root/openwebui-docker/webui.db`
-- Connected to host network for internal services access
 
 ### Troubleshooting
 
