@@ -53,16 +53,16 @@ This will start:
 - **N8n Workflow Automation** on port 5678
 - **Open WebUI** on port 3200
 
-### 4. Access the Application
+#### Access the Application
 
 - **Open WebUI**: http://localhost:3200
 - **N8n**: http://localhost:5678  
 You can configure your custom domain.
 
-### Configuration Notes
+#### Configuration Notes
 
 #### N8n Configuration
-- Host: `localhost` or your custom domain. 
+- Host: `localhost` or your custom domain. See docker compose file for more detail.
 - Protocol: HTTPS
 - Max payload size: 50MB 
 - Community packages enabled
@@ -72,10 +72,35 @@ You can configure your custom domain.
 - SQLite database mounted from host at `/root/openwebui-docker/webui.db`
 - Connected to host network for internal services access
 
-### 3. eHospital Data Sync 
+### 3. Import 3 workflows into N8N
+
+- Create a workflow 
+- select Impot from File (as screenshoot)
+![Screenshot1](images/import_workflow.png)
+- make sure you had all the required credential for the workflows to work 
+-- OpenAI 
+-- PineCone Knowledge Basse
+-- S3 Storage 
+-- IMAP/SMTP 
+
+- Make sure you have the correct webhook and workflow setup for production.
+![Screenshot1](images/n8n_webhook_configure.png)
 
 
-### 6. eHospital Data Sync 
+
+### 4. Configure OpenWebUI
+1. Access Admin Panel
+![Screenshot1](images/admin_panel.png)
+2. Add Python Function 
+![Screenshot1](images/add_function.png)
+3. Add N8N webhook
+![Screenshot1](images/n8n_webhook.png)
+4. Enable N8N Model 
+![Screenshot1](images/openwebui_model.png)
+
+
+
+### 5. eHospital Data Sync 
 
 Create a `.env` file in the root directory with ehospital MySQL database setup. There is an example file that you can copy and edit. 
 
