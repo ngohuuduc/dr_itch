@@ -1,4 +1,4 @@
-# dr_itch
+# Doctor Intelligent Tool for Clinical Help (Dr. Itch)
 A Conversational AI Framework for Medical Education: Integrating Literature, Clinical Data, and Real-Time Research
 
 ## Installation
@@ -8,7 +8,6 @@ A Conversational AI Framework for Medical Education: Integrating Literature, Cli
 - Python 3.8 or higher
 - Docker and Docker Compose
 - MySQL database access
-- Git
 
 ### 1. Clone the Repository
 
@@ -61,6 +60,12 @@ Ensure your MySQL database contains the required `doctors_registration` table in
 
 ### 6. Initial Data Sync
 
+#### prior to run the script. please locate the pre-created database webui.db 
+default username/password for Adminin
+
+- username: admin@test.ca
+- password: dti6302
+
 Run the hospital data synchronization script:
 
 ```bash
@@ -89,7 +94,8 @@ This will start:
 ### 8. Access the Application
 
 - **Open WebUI**: http://localhost:3200
-- **N8n**: http://localhost:5678 (if configured with domain: https://n8n.parainsight.com)
+- **N8n**: http://localhost:5678  
+You can configure your custom domain.
 
 ### Configuration Notes
 
