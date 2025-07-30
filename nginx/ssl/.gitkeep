@@ -1,0 +1,5 @@
+# Place your SSL certificates here
+# n8n.parainsight.com.crt
+# n8n.parainsight.com.key
+# webui.parainsight.com.crt
+# webui.parainsight.com.key

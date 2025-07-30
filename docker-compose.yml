@@ -1,0 +1,42 @@
+volumes:
+  open-webui:
+  n8n_data:
+
+networks:
+  shared-net:
+    external: true
+
+services:
+  # N8n
+  n8n:
+    image: docker.n8n.io/n8nio/n8n
+    networks: ['shared-net']
+    container_name: n8n
+    restart: unless-stopped
+    ports:
+      - 5678:5678
+    environment:
+      - N8N_HOST=n8n.parainsight.com
+      - WEBHOOK_URL=https://n8n.parainsight.com/
+      - N8N_PORT=5678
+      - N8N_PROTOCOL=https
+      - N8N_EDITOR_BASE_URL=https://n8n.parainsight.com/
+      - TZ=Asia/Ho_Chi_Minh
+      - N8N_COMMUNITY_PACKAGES_ALLOW_TOOL_USAGE=true
+      - N8N_PAYLOAD_SIZE_MAX=50mb
+    volumes:
+      - n8n_data:/home/node/.n8n
+
+  # Open WebUI
+  open-webui:
+    image: ghcr.io/open-webui/open-webui:main
+    networks: ['shared-net']
+    restart: unless-stopped
+    container_name: open-webui
+    ports:
+      - "3200:8080"
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    volumes:
+      - open-webui:/app/backend/data
+      - /root/openwebui-docker/webui.db:/app/backend/data/webui.db
