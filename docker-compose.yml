@@ -17,10 +17,10 @@ services:
       - 5678:5678
     environment:
       - N8N_HOST=n8n.parainsight.com
-      - WEBHOOK_URL=https://n8n.parainsight.com/
+      # - WEBHOOK_URL=https://n8n.parainsight.com/ ## TODO: change to upate your domain
       - N8N_PORT=5678
       - N8N_PROTOCOL=https
-      - N8N_EDITOR_BASE_URL=https://n8n.parainsight.com/
+      # - N8N_EDITOR_BASE_URL=https://n8n.parainsight.com/ ## TODO: change to upate your domain
       - TZ=Asia/Ho_Chi_Minh
       - N8N_COMMUNITY_PACKAGES_ALLOW_TOOL_USAGE=true
       - N8N_PAYLOAD_SIZE_MAX=50mb
