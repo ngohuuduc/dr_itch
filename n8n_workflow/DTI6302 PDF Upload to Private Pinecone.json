@@ -1,0 +1,248 @@
+{
+  "name": "DTI6302 PDF Upload to Private Pinecone",
+  "nodes": [
+    {
+      "parameters": {
+        "url": "={{ $json.URL }}",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Accept",
+              "value": "application/pdf,*/*"
+            },
+            {
+              "name": "User-Agent",
+              "value": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36"
+            },
+            {
+              "name": "Accept-Language",
+              "value": "en-US,en;q=0.9"
+            }
+          ]
+        },
+        "options": {
+          "response": {
+            "response": {
+              "responseFormat": "file"
+            }
+          }
+        }
+      },
+      "id": "9a3be343-a8b4-421c-a7eb-f29bcde39433",
+      "name": "Download PDF",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        128,
+        48
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Log the result and prepare final output\nconst downloadResult = $node[\"Download PDF\"].json;\nconst uploadResult = $node[\"Upload a file\"].json;\n\nconsole.log('PDF Download Result:', downloadResult);\nconsole.log('S3 Upload Result:', uploadResult);\n\nreturn [{\n  json: {\n    success: true,\n    message: \"PDF successfully downloaded and uploaded to S3\",\n    sourceUrl: \"https://arxiv.org/pdf/2504.16902\",\n    s3Location: `s3://filestore/pdfs/2504.16902.pdf`,\n    uploadDetails: uploadResult,\n    timestamp: new Date().toISOString()\n  }\n}];"
+      },
+      "id": "3057d07e-fe31-4ecc-a6c4-0d5c50232f1b",
+      "name": "Log Results",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        848,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "upload",
+        "bucketName": "filestore",
+        "fileName": "={{ $json.userEmail }}/{{ $json.filename }}",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.s3",
+      "typeVersion": 1,
+      "position": [
+        592,
+        -32
+      ],
+      "id": "e82cd861-b878-4ad2-b23a-b168cad9efa5",
+      "name": "Upload a file",
+      "credentials": {
+        "s3": {
+          "id": "sqUsSnNt98RS2nnS",
+          "name": "S3 account CMC"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "inputSource": "jsonExample",
+        "jsonExample": "{\n  \"URL\": \"https://arxiv.org/pdf/2504.16902\",\n  \"filename\": \"2504.16902.pdf\",\n  \"userEmail\": \"duc.ngo@parainsight.com\"\n}"
+      },
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        -192,
+        16
+      ],
+      "id": "b31c79b9-b071-400a-9ddd-a24fbe3c7506",
+      "name": "When Executed by Another Workflow"
+    },
+    {
+      "parameters": {
+        "mode": "insert",
+        "pineconeIndex": {
+          "__rl": true,
+          "value": "dti6302",
+          "mode": "list",
+          "cachedResultName": "dti6302"
+        },
+        "options": {
+          "pineconeNamespace": "={{ $json.userEmail }}"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.vectorStorePinecone",
+      "typeVersion": 1.3,
+      "position": [
+        464,
+        176
+      ],
+      "id": "c29ee57e-bc4a-4401-86bc-74d4be665105",
+      "name": "Pinecone Vector Store",
+      "credentials": {
+        "pineconeApi": {
+          "id": "nj0xE4bEbwOWCRRr",
+          "name": "PineconeApi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {
+          "dimensions": 1536
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.embeddingsOpenAi",
+      "typeVersion": 1.2,
+      "position": [
+        400,
+        384
+      ],
+      "id": "42dc7777-182e-47ba-92f6-528b833590bf",
+      "name": "Embeddings OpenAI",
+      "credentials": {
+        "openAiApi": {
+          "id": "VXMuFSP8LORSc9pr",
+          "name": "OpenAi account 2 - Professor Ali"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "dataType": "binary",
+        "loader": "pdfLoader",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.documentDefaultDataLoader",
+      "typeVersion": 1.1,
+      "position": [
+        608,
+        400
+      ],
+      "id": "47096a98-59bc-4587-9847-29c87c5ba008",
+      "name": "Default Data Loader"
+    }
+  ],
+  "pinData": {
+    "When Executed by Another Workflow": [
+      {
+        "json": {
+          "URL": "https://arxiv.org/pdf/2002.12632.pdf",
+          "filename": "The_Atrial_Fibrillation_Risk_Score_for_Hyperthyroidism_Patients.pdf",
+          "userEmail": "doc1@test.com"
+        }
+      }
+    ]
+  },
+  "connections": {
+    "Download PDF": {
+      "main": [
+        [
+          {
+            "node": "Pinecone Vector Store",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Upload a file",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Upload a file": {
+      "main": [
+        [
+          {
+            "node": "Log Results",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "When Executed by Another Workflow": {
+      "main": [
+        [
+          {
+            "node": "Download PDF",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Pinecone Vector Store": {
+      "main": [
+        []
+      ]
+    },
+    "Embeddings OpenAI": {
+      "ai_embedding": [
+        [
+          {
+            "node": "Pinecone Vector Store",
+            "type": "ai_embedding",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Default Data Loader": {
+      "ai_document": [
+        [
+          {
+            "node": "Pinecone Vector Store",
+            "type": "ai_document",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "saveDataErrorExecution": "all",
+    "saveDataSuccessExecution": "all",
+    "saveManualExecutions": true,
+    "saveExecutionProgress": true
+  },
+  "versionId": "3da3b31d-b86d-4c8a-b8cc-8447a0547661",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "0237550b574604c1ea09339c1cc09e28ff88c9d06b1eab0ba5a6e3ce2d551783"
+  },
+  "id": "sKztsZ4UxoR6GdPl",
+  "tags": []
+}

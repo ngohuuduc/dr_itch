@@ -1,0 +1,783 @@
+{
+  "name": "DTI6302 Primary",
+  "nodes": [
+    {
+      "parameters": {
+        "model": "gpt-4.1-mini",
+        "options": {}
+      },
+      "id": "e9a367f0-59c4-480d-8c93-b66b46f59453",
+      "name": "OpenAI Chat Model",
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1,
+      "position": [
+        -1504,
+        400
+      ],
+      "credentials": {
+        "openAiApi": {
+          "id": "VXMuFSP8LORSc9pr",
+          "name": "OpenAi account 2 - Professor Ali"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "content": "## Section 3 : PRIVATE & PUBLIC Knowledge base ",
+        "height": 537,
+        "width": 631,
+        "color": 4
+      },
+      "id": "28f75b6d-c46a-4700-8594-bcfe741ed349",
+      "name": "Sticky Note",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -784,
+        112
+      ]
+    },
+    {
+      "parameters": {
+        "content": "## SECTION 2: RAG AI Agent with Chat Interface",
+        "height": 553,
+        "width": 1136,
+        "color": 2
+      },
+      "id": "0e74b53d-a459-4a5e-8ded-cf35ee25226a",
+      "name": "Sticky Note2",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -1936,
+        112
+      ]
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "id": "61465e91-b053-4fef-b75c-e000d7e8f274",
+      "name": "Respond to Webhook",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [
+        -1008,
+        176
+      ]
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "9a9a245e-f1a1-4282-bb02-a81ffe629f0f",
+              "name": "chatInput",
+              "value": "={{ $json?.chatInput || $json.body.chatInput }}",
+              "type": "string"
+            },
+            {
+              "id": "b80831d8-c653-4203-8706-adedfdb98f77",
+              "name": "sessionId",
+              "value": "={{ $json?.sessionId || $json.body.sessionId}}",
+              "type": "string"
+            },
+            {
+              "id": "681e598c-f403-4a9c-86cf-c71a3820baa6",
+              "name": "userEmail",
+              "value": "={{$json.body.userEmail||\"public\" }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "182a1271-e6c2-4754-b18f-2d22ef2b8895",
+      "name": "Edit Fields",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -1616,
+        240
+      ]
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "invoke_agent_01",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "id": "3db8c10c-d1d0-4a01-b398-b2fc3b602a95",
+      "name": "Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        -1872,
+        480
+      ],
+      "webhookId": "bf4dd093-bb02-472c-9454-7ab9af97bd1d",
+      "notesInFlow": true
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.embeddingsOpenAi",
+      "typeVersion": 1.2,
+      "position": [
+        -368,
+        480
+      ],
+      "id": "917426b3-49db-481c-a4a0-678deef9012c",
+      "name": "Embeddings OpenAI2",
+      "credentials": {
+        "openAiApi": {
+          "id": "VXMuFSP8LORSc9pr",
+          "name": "OpenAi account 2 - Professor Ali"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "content": "## Section 4: Web Search using Brave API",
+        "height": 376,
+        "width": 304,
+        "color": 6
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -1344,
+        816
+      ],
+      "id": "66525bb5-0ac3-42d0-b9e3-29f4863853a8",
+      "name": "Sticky Note3"
+    },
+    {
+      "parameters": {
+        "content": "## SECTION 5 : HTTP request with MySQL database\n",
+        "height": 381,
+        "width": 428,
+        "color": 6
+      },
+      "id": "9d719f17-bdc7-4ce2-b0fe-c8d912111351",
+      "name": "Sticky Note4",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -2080,
+        816
+      ]
+    },
+    {
+      "parameters": {
+        "public": true,
+        "mode": "webhook",
+        "options": {}
+      },
+      "id": "b1ea7250-c31d-44c2-ba78-b1c4e2d1490a",
+      "name": "When chat message received",
+      "type": "@n8n/n8n-nodes-langchain.chatTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        -1888,
+        192
+      ],
+      "webhookId": "e104e40e-6134-4825-a6f0-8a646d882662",
+      "notesInFlow": false
+    },
+    {
+      "parameters": {},
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.3,
+      "position": [
+        -1344,
+        400
+      ],
+      "id": "8677286d-a379-4d76-8bc2-86ee17cd54a7",
+      "name": "Simple Memory"
+    },
+    {
+      "parameters": {
+        "toolDescription": "**Purpose**: Retrieve comprehensive medical records and clinical data\n**Quick Reference Guide**:\n\n**🏥 PATIENT DATA**\n- `patient_info` - Demographics, contact, allergies, medical history\n- `patients_registration` - Registration and admission records\n- `vitals_history` - Blood pressure, heart rate, temperature logs\n\n**🔬 CLINICAL TESTS**\n- `bloodtests` - Complete blood count, chemistry panels\n- `ecg` - Electrocardiogram results and interpretations  \n- `physical_test_*` - Various physical examination results\n\n**💊 TREATMENT DATA**\n- `prescription` - Medication records and dosages\n- `diagnosis` - Diagnostic codes and clinical assessments\n- `patients_treatment` - Treatment plans and progress notes\n\n**📅 ADMINISTRATIVE**\n- `doctor_appointment` - Scheduling and appointment history\n- `clinical_trials` - Research participation records\n- `doctor_patient_visits` - Visit logs and encounter notes\n\n**Usage**: `https://tysnx3mi2s.us-east-1.awsapprunner.com/table/{tablename}`\n**Security**: Only approved tables accessible, user permissions apply\n**Performance**: Use specific table queries rather than broad searches",
+        "url": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('URL', ``, 'string') }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequestTool",
+      "typeVersion": 4.2,
+      "position": [
+        -2032,
+        944
+      ],
+      "id": "fa1c35b7-38b0-4cf8-9c97-f31402e54a6c",
+      "name": "Fetch Information from eHostpital"
+    },
+    {
+      "parameters": {
+        "description": "**Purpose**: Organize complex medical reasoning before responding\n**Use For**:\n- Differential diagnosis discussions\n- Treatment option analysis\n- Multi-step medical calculations\n- Complex case study breakdowns\n**When to Use**: Before providing detailed medical explanations"
+      },
+      "type": "@n8n/n8n-nodes-langchain.toolThink",
+      "typeVersion": 1,
+      "position": [
+        -960,
+        416
+      ],
+      "id": "3fc8a5ec-1a24-4c69-8958-1096abaecb78",
+      "name": "Think"
+    },
+    {
+      "parameters": {
+        "content": "## SECTION 1 : NOTE\n**Double click** to edit me. [Guide](https://docs.n8n.io/workflows/sticky-notes/)\n\nAuthor : Duc & Jean-Marie \n\nThis AI Chatflow is created to accomondate the requirement of DTI6302 Project.\n\nAlways pay attention to System Message and confitration of each node.",
+        "height": 568,
+        "width": 336
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -2288,
+        112
+      ],
+      "typeVersion": 1,
+      "id": "06e44a2e-370f-4014-a381-047182796400",
+      "name": "Sticky Note1"
+    },
+    {
+      "parameters": {
+        "content": "## SECTION 6 : Download PDF and then embeed into Knowledge Base",
+        "height": 380,
+        "width": 296,
+        "color": 6
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -1648,
+        816
+      ],
+      "typeVersion": 1,
+      "id": "86b99a4a-c737-4640-afc4-7a66e4f32963",
+      "name": "Sticky Note5"
+    },
+    {
+      "parameters": {
+        "descriptionType": "manual",
+        "toolDescription": "**Purpose**: Research current medical developments and verify latest information\n**Appropriate Uses**:\n- Recent clinical trial results\n- Latest FDA approvals and drug information\n- Current medical news and breakthrough research\n- Updated clinical guidelines and protocols\n- Emerging treatment methodologies\n\n**Medical Search Strategy**:\n- Focus on reputable medical sources (PubMed, medical journals)\n- Verify information through multiple sources\n- Prioritize peer-reviewed content\n- Include publication dates in citations\n**Limitations**: Cannot access subscription-only medical databases",
+        "query": "={{ $fromAI('Query', ``, 'string') }}",
+        "count": "=  10"
+      },
+      "type": "@brave/n8n-nodes-brave-search.braveSearchTool",
+      "typeVersion": 1,
+      "position": [
+        -1264,
+        928
+      ],
+      "id": "f8b6d42e-3568-4545-b035-91d742b4ed66",
+      "name": "Brave Search1",
+      "alwaysOutputData": false,
+      "credentials": {
+        "braveSearchApi": {
+          "id": "iDWbuB7mDSg8rbM2",
+          "name": "Brave Search account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {
+          "systemMessage": "You are \"Medusa\" (Medical Educational Conversational Assistant), a specialized AI assistant designed for medical education and healthcare data management within the DTI6302 project framework.\n\n## Identity & Scope\n- **Primary Role**: Medical education support and clinical data assistance\n- **Target Users**: Medical students, healthcare professionals, researchers\n- **Specialization**: Evidence-based medical information with comprehensive data access\n- **Language**: Professional medical terminology with clear explanations\n\n## Core Capabilities Matrix\n| Category | Tools Available | Primary Use Cases |\n|----------|----------------|-------------------|\n| **Knowledge Retrieval** | Private/Public Vector Stores | Medical literature, research papers, guidelines |\n| **Clinical Data** | eHospital Database (80+ tables) | Patient records, test results, administrative data |\n| **Document Management** | PDF Processing, S3 Storage | Upload, index, and retrieve medical documents |\n| **Communication** | Email Send/Read | Patient correspondence, appointment management |\n| **Research** | Brave Search API | Current medical developments, latest research |\n| **Analysis** | Think Tool | Complex medical reasoning, differential diagnosis |\n\n## Intelligent Tool Selection Protocol\n\n### **Decision Tree for Information Requests:**\n1. **Personal/User Context?** → Private Knowledge Base\n2. **General Medical Knowledge?** → Public Knowledge Base  \n3. **Patient/Clinical Data?** → eHospital Database\n4. **Recent Developments?** → Web Search\n5. **Complex Analysis?** → Think Tool first, then appropriate data source\n\n### **Tool Coordination Rules:**\n- **Always use Think Tool** before complex medical explanations\n- **Combine multiple sources** for comprehensive answers\n- **Cross-reference findings** between knowledge bases and database\n- **Provide source attribution** for all medical claims\n- ** Upload PDF files** using form : https://n8n.parainsight.com/form/pdf-upload-form \n\n## Response Excellence Standards\n1. **Medical Accuracy**: All information must be evidence-based and properly cited\n2. **Patient Safety Priority**: Include disclaimers for serious medical concerns\n3. **Educational Focus**: Explain complex concepts clearly for learning\n4. **Professional Tone**: Maintain appropriate medical communication standards\n5. **Comprehensive Coverage**: Address all aspects of medical queries when possible\n\n## Error Recovery & Limitations\n- **Tool Failures**: Attempt alternative approaches, explain limitations transparently\n- **Data Gaps**: Acknowledge missing information, suggest alternative sources\n- **Technical Issues**: Provide workarounds and user guidance\n- **Medical Boundaries**: Clearly distinguish between information and medical advice\n\n## Safety & Ethics Framework\n- **NEVER provide personal medical advice** - education and information only\n- **Always recommend professional consultation** for diagnosis/treatment decisions\n- **Maintain patient confidentiality** in all data handling\n- **Cite all medical claims** with appropriate sources\n- **Include medical disclaimers** for clinical information\n\n## Engagement Protocol\n- **Ask clarifying questions** to better understand user needs\n- **Provide follow-up suggestions** to continue learning\n- **Offer additional resources** when helpful\n- **Maintain conversation flow** with relevant follow-up questions\n\n**Medical Disclaimer**: This assistant provides educational information only and is not a substitute for professional medical advice, diagnosis, or treatment. Always consult qualified healthcare providers for medical decisions.",
+          "enableStreaming": false
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 2.2,
+      "position": [
+        -1328,
+        208
+      ],
+      "id": "ef301384-7a97-4061-b18a-04fbce0275a2",
+      "name": "RAG AI AGENT",
+      "notesInFlow": true
+    },
+    {
+      "parameters": {
+        "description": "**Purpose**: Add new medical documents to knowledge base\n**Process**: Downloads PDF → Extracts text → Adds to Pinecone → Available for future searches\n**Parameters**: URL (document link) + filename + userEmail\n**Note**: If download fails due to anti-bot protection, inform user to provide text directly",
+        "workflowId": {
+          "__rl": true,
+          "value": "sKztsZ4UxoR6GdPl",
+          "mode": "list",
+          "cachedResultName": "PDF Upload to Pinecone"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "URL": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('URL', ``, 'string') }}",
+            "filename": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('filename', ``, 'string') }}",
+            "userEmail": "={{ $('Edit Fields').item.json.userEmail }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "URL",
+              "displayName": "URL",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string"
+            },
+            {
+              "id": "filename",
+              "displayName": "filename",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string"
+            },
+            {
+              "id": "userEmail",
+              "displayName": "userEmail",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string",
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.toolWorkflow",
+      "typeVersion": 2.2,
+      "position": [
+        -1568,
+        992
+      ],
+      "id": "3ccbf337-08e5-457d-91bd-2b9c09540e86",
+      "name": "Call n8n Workflow Tool"
+    },
+    {
+      "parameters": {
+        "mode": "retrieve-as-tool",
+        "toolDescription": "**Purpose**: Search your personal medical document collection\n**Content Types**:\n- Research papers you've uploaded\n- Personal study notes and annotations\n- Custom clinical protocols\n- Private case study materials\n- User-specific medical guidelines\n\n**Search Strategy**:\n- Use specific medical terminology for better results\n- Try broader terms if specific searches fail\n- Combine with public knowledge for comprehensive coverage\n**Privacy**: Your documents remain isolated in your personal namespace\n**Performance**: Search results ranked by relevance and recency",
+        "pineconeIndex": {
+          "__rl": true,
+          "value": "dti6302",
+          "mode": "list",
+          "cachedResultName": "dti6302"
+        },
+        "topK": 10,
+        "includeDocumentMetadata": false,
+        "options": {
+          "pineconeNamespace": "={{ $('Edit Fields').item.json.userEmail }}"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.vectorStorePinecone",
+      "typeVersion": 1.3,
+      "position": [
+        -736,
+        368
+      ],
+      "id": "bd946de9-e0ba-4dcd-8681-00569e7498ac",
+      "name": "Private Vector Knowledge Base",
+      "credentials": {
+        "pineconeApi": {
+          "id": "nj0xE4bEbwOWCRRr",
+          "name": "PineconeApi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "mode": "retrieve-as-tool",
+        "toolDescription": "**Purpose**: Access shared medical literature and educational resources\n**Content Library**:\n- Peer-reviewed medical research\n- Clinical practice guidelines\n- Medical textbook excerpts\n- Public health information\n- Educational case studies\n\n**Best Practices**:\n- Start here for standard medical information\n- Use for evidence-based clinical guidelines\n- Cross-reference with database for real-world data\n**Quality**: Content curated for medical education and practice",
+        "pineconeIndex": {
+          "__rl": true,
+          "value": "dti6302",
+          "mode": "list",
+          "cachedResultName": "dti6302"
+        },
+        "topK": 10,
+        "includeDocumentMetadata": false,
+        "options": {
+          "pineconeNamespace": "public"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.vectorStorePinecone",
+      "typeVersion": 1.3,
+      "position": [
+        -464,
+        208
+      ],
+      "id": "e0dd2b53-3552-445f-9657-4cc6fd7b8ddb",
+      "name": "Public Vector Knowledgebase",
+      "credentials": {
+        "pineconeApi": {
+          "id": "nj0xE4bEbwOWCRRr",
+          "name": "PineconeApi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "toolDescription": "**Purpose**: Create new medical records\n**Use For**: Adding new patient data, test results, appointments\n**Format**: Same URL structure as GET tool\n**Security**: Restricted to approved tables only\n**Note**: Validate required fields before submission",
+        "method": "POST",
+        "url": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('URL', ``, 'string') }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequestTool",
+      "typeVersion": 4.2,
+      "position": [
+        -1872,
+        1024
+      ],
+      "id": "aac7b089-da3b-4bae-bac4-baa2c184ecbd",
+      "name": "POST new records"
+    },
+    {
+      "parameters": {
+        "toolDescription": "**Purpose**: Update existing medical records\n**Use For**: Modifying patient information, updating test results\n**Format**: Same URL structure as GET/POST tools\n**Note**: Requires existing record ID for updates",
+        "method": "PATCH",
+        "url": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('URL', ``, 'string') }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequestTool",
+      "typeVersion": 4.2,
+      "position": [
+        -1776,
+        912
+      ],
+      "id": "c63dec3c-d44f-4656-868f-f5f1c6a371b1",
+      "name": "PATCH records"
+    },
+    {
+      "parameters": {
+        "toolDescription": "**Purpose**: Read incoming medical communications\n**Use For**: \n- Processing patient responses\n- Reading appointment requests\n- Handling form submissions\n**Format**: Returns resolved email content\n**Note**: Automatically marks emails as read",
+        "format": "resolved",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.emailReadImapTool",
+      "typeVersion": 2,
+      "position": [
+        -992,
+        912
+      ],
+      "id": "cb60fa42-ff05-495f-a440-46cdf6dad70c",
+      "name": "Email Trigger (IMAP)",
+      "credentials": {
+        "imap": {
+          "id": "6mszBKBoaWsgzZw1",
+          "name": "IMAP account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "content": "## Section 7 Email Sending Tool",
+        "height": 368,
+        "width": 336,
+        "color": 6
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -1040,
+        816
+      ],
+      "typeVersion": 1,
+      "id": "bf57fb7a-2759-464f-88eb-737a84d1d5f8",
+      "name": "Sticky Note6"
+    },
+    {
+      "parameters": {
+        "descriptionType": "manual",
+        "toolDescription": "**Purpose**: Send professional medical communications\n**Communication Types**:\n- Patient information requests with structured forms\n- Appointment confirmations and reminders\n- Medical report distribution\n- Educational material sharing\n- Professional correspondence\n\n**Professional Standards**:\n- Always include proper medical disclaimers\n- Use appropriate subject lines for medical communications\n- Include sender identification and contact information\n- Maintain HIPAA-compliant language when applicable\n**Template Usage**: Can generate structured forms for data collection",
+        "fromEmail": "dti_6302_itch@mailo.com",
+        "toEmail": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('To_Email', ``, 'string') }}",
+        "subject": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Subject', ``, 'string') }}",
+        "html": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('HTML', ``, 'string') }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.emailSendTool",
+      "typeVersion": 2.1,
+      "position": [
+        -816,
+        944
+      ],
+      "id": "87623b3b-0b21-4ede-a507-1e0b3105ce09",
+      "name": "Send email in Send Email",
+      "webhookId": "8048924b-56b1-4b45-ad3f-4f20f68cb236",
+      "credentials": {
+        "smtp": {
+          "id": "BZuwYyeRVPiHZkwO",
+          "name": "SMTP account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "content": "## Section 8 : S3 storage control \n",
+        "height": 384,
+        "width": 272,
+        "color": 6
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -704,
+        816
+      ],
+      "typeVersion": 1,
+      "id": "b558609b-cd1b-4f02-bcd5-15de42304bf3",
+      "name": "Sticky Note7"
+    },
+    {
+      "parameters": {
+        "descriptionType": "manual",
+        "toolDescription": "**Purpose**: Browse and retrieve uploaded medical documents from cloud storage\n**File Types**: PDF documents, research papers, clinical guidelines\n**Organization**: \n- `/pdfs/[userEmail]/` - Private user documents\n- `/pdfs/public/` - Shared medical resources\n**Use Cases**:\n- List available documents for user reference\n- Retrieve specific files mentioned in conversations\n- Verify successful document uploads\n- Browse document library for research\n**Note**: Files here are source documents; processed content is in knowledge bases",
+        "operation": "getAll",
+        "bucketName": "filestore",
+        "returnAll": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.s3Tool",
+      "typeVersion": 1,
+      "position": [
+        -592,
+        976
+      ],
+      "id": "e43c8c1d-c733-4eb3-8f36-a24c91f45a43",
+      "name": "Get files and Folders",
+      "credentials": {
+        "s3": {
+          "id": "sqUsSnNt98RS2nnS",
+          "name": "S3 account CMC"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "OpenAI Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "RAG AI AGENT",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "RAG AI AGENT",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Embeddings OpenAI2": {
+      "ai_embedding": [
+        [
+          {
+            "node": "Private Vector Knowledge Base",
+            "type": "ai_embedding",
+            "index": 0
+          },
+          {
+            "node": "Public Vector Knowledgebase",
+            "type": "ai_embedding",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "When chat message received": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Simple Memory": {
+      "ai_memory": [
+        [
+          {
+            "node": "RAG AI AGENT",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Fetch Information from eHostpital": {
+      "ai_tool": [
+        [
+          {
+            "node": "RAG AI AGENT",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Think": {
+      "ai_tool": [
+        [
+          {
+            "node": "RAG AI AGENT",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Brave Search1": {
+      "ai_tool": [
+        [
+          {
+            "node": "RAG AI AGENT",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "RAG AI AGENT": {
+      "main": [
+        [
+          {
+            "node": "Respond to Webhook",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Call n8n Workflow Tool": {
+      "ai_tool": [
+        [
+          {
+            "node": "RAG AI AGENT",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Private Vector Knowledge Base": {
+      "ai_tool": [
+        [
+          {
+            "node": "RAG AI AGENT",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Public Vector Knowledgebase": {
+      "ai_tool": [
+        [
+          {
+            "node": "RAG AI AGENT",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "POST new records": {
+      "ai_tool": [
+        [
+          {
+            "node": "RAG AI AGENT",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "PATCH records": {
+      "ai_tool": [
+        [
+          {
+            "node": "RAG AI AGENT",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Email Trigger (IMAP)": {
+      "ai_tool": [
+        [
+          {
+            "node": "RAG AI AGENT",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send email in Send Email": {
+      "ai_tool": [
+        [
+          {
+            "node": "RAG AI AGENT",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get files and Folders": {
+      "ai_tool": [
+        [
+          {
+            "node": "RAG AI AGENT",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "callerPolicy": "workflowsFromSameOwner",
+    "executionOrder": "v1"
+  },
+  "versionId": "1dc94ec8-8f97-4513-93eb-eb5d17a783a0",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "0237550b574604c1ea09339c1cc09e28ff88c9d06b1eab0ba5a6e3ce2d551783"
+  },
+  "id": "VIzHszto8wB3KRA9",
+  "tags": [
+    {
+      "createdAt": "2025-07-12T00:57:57.185Z",
+      "updatedAt": "2025-07-12T00:57:57.185Z",
+      "id": "sd6YJFsiF5oFzAO3",
+      "name": "PRD"
+    }
+  ]
+}

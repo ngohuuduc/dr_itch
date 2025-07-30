@@ -1,0 +1,268 @@
+{
+  "name": "DTI6302 Form for Upload for Public and Private PDF",
+  "nodes": [
+    {
+      "parameters": {
+        "formTitle": "Upload PDF to Knowledge Base",
+        "formDescription": "Upload PDF files to add them to the medical knowledge base. Supported formats: PDF files up to 10MB.",
+        "formFields": {
+          "values": [
+            {
+              "fieldLabel": "Single PDF Files",
+              "fieldType": "file",
+              "multipleFiles": false,
+              "acceptFileTypes": ".pdf",
+              "requiredField": true
+            },
+            {
+              "fieldLabel": "User Email (if blank, Upload data will belong to public Knowledge Base) ",
+              "placeholder": "your.email@domain.com"
+            },
+            {
+              "fieldLabel": "Document Category (optional)",
+              "placeholder": "Medical document"
+            },
+            {
+              "fieldLabel": "Document Description (Optional)",
+              "fieldType": "textarea",
+              "placeholder": "Brief description of the document content..."
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "0e7971b1-eccc-460a-bef1-5b61473ac00c",
+      "name": "PDF Upload Form",
+      "type": "n8n-nodes-base.formTrigger",
+      "typeVersion": 2.2,
+      "position": [
+        -1232,
+        256
+      ],
+      "webhookId": "pdf-upload-form"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "userEmail",
+              "name": "userEmail",
+              "value": "={{ \"public\" ||$json[\"User Email\"] }}",
+              "type": "string"
+            },
+            {
+              "id": "category",
+              "name": "category",
+              "value": "={{$json[\"Document Category\"] || \"null\" }}",
+              "type": "string"
+            },
+            {
+              "id": "description",
+              "name": "description",
+              "value": "={{ $json.description || 'Medical document uploaded via form' }}",
+              "type": "string"
+            },
+            {
+              "id": "uploadTimestamp",
+              "name": "uploadTimestamp",
+              "value": "={{ new Date().toISOString() }}",
+              "type": "string"
+            },
+            {
+              "id": "fileName",
+              "name": "fileName",
+              "value": "={{ $json[\"PDF File\"].filename }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "fd211362-94ff-4dd1-b986-15741c74b5fc",
+      "name": "Process Form Data",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -928,
+        128
+      ]
+    },
+    {
+      "parameters": {
+        "dataType": "binary",
+        "loader": "pdfLoader",
+        "options": {}
+      },
+      "id": "7925f7c3-9bd3-4b7b-aa22-0bff24532f77",
+      "name": "PDF Document Loader",
+      "type": "@n8n/n8n-nodes-langchain.documentDefaultDataLoader",
+      "typeVersion": 1.1,
+      "position": [
+        -544,
+        384
+      ]
+    },
+    {
+      "parameters": {
+        "options": {
+          "dimensions": 1536
+        }
+      },
+      "id": "6c6ef986-ec8c-4b67-9b72-0259e13e267e",
+      "name": "OpenAI Embeddings",
+      "type": "@n8n/n8n-nodes-langchain.embeddingsOpenAi",
+      "typeVersion": 1.2,
+      "position": [
+        -688,
+        400
+      ],
+      "credentials": {
+        "openAiApi": {
+          "id": "VXMuFSP8LORSc9pr",
+          "name": "OpenAi account 2 - Professor Ali"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "mode": "insert",
+        "pineconeIndex": {
+          "__rl": true,
+          "value": "dti6302",
+          "mode": "list",
+          "cachedResultName": "dti6302"
+        },
+        "options": {
+          "pineconeNamespace": "={{ \"public\" ||$json.userEmail }}"
+        }
+      },
+      "id": "6a241aac-42d4-4b10-87cd-3d6f0c633cc3",
+      "name": "Store in Knowledge Base",
+      "type": "@n8n/n8n-nodes-langchain.vectorStorePinecone",
+      "typeVersion": 1.3,
+      "position": [
+        -688,
+        224
+      ],
+      "credentials": {
+        "pineconeApi": {
+          "id": "nj0xE4bEbwOWCRRr",
+          "name": "PineconeApi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "upload",
+        "bucketName": "filestore",
+        "fileName": "={{  $json[\"User Email (if blank, Upload data will belong to public Knowledge Base) \"|| \"public\"] }}/{{ $json[\"Single PDF Files\"].filename }}",
+        "binaryPropertyName": "Single_PDF_Files",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.s3",
+      "typeVersion": 1,
+      "position": [
+        -928,
+        368
+      ],
+      "id": "f1cbcfeb-04d3-4d63-946b-ca73822fec92",
+      "name": "Upload PDF files to S3",
+      "credentials": {
+        "s3": {
+          "id": "sqUsSnNt98RS2nnS",
+          "name": "S3 account CMC"
+        }
+      }
+    }
+  ],
+  "pinData": {
+    "PDF Upload Form": [
+      {
+        "json": {
+          "Single PDF Files": {
+            "filename": "BMG5111 DTI6302 Summer 2025 Lecture Note Week  1 .pdf",
+            "mimetype": "application/pdf",
+            "size": 1957597
+          },
+          "User Email (if blank, Upload data will belong to public Knowledge Base) ": "doc1@test.com",
+          "Document Category (optional)": "",
+          "Document Description (Optional)": "Professor Lecture 01 ",
+          "submittedAt": "2025-07-21T19:25:13.656-04:00",
+          "formMode": "production"
+        }
+      }
+    ]
+  },
+  "connections": {
+    "PDF Upload Form": {
+      "main": [
+        [
+          {
+            "node": "Process Form Data",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Store in Knowledge Base",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Upload PDF files to S3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Process Form Data": {
+      "main": [
+        []
+      ]
+    },
+    "PDF Document Loader": {
+      "ai_document": [
+        [
+          {
+            "node": "Store in Knowledge Base",
+            "type": "ai_document",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Embeddings": {
+      "ai_embedding": [
+        [
+          {
+            "node": "Store in Knowledge Base",
+            "type": "ai_embedding",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Store in Knowledge Base": {
+      "main": [
+        []
+      ]
+    },
+    "Upload PDF files to S3": {
+      "main": [
+        []
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "97bfd2a9-8ddf-43cd-84c0-308de22f2d96",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "0237550b574604c1ea09339c1cc09e28ff88c9d06b1eab0ba5a6e3ce2d551783"
+  },
+  "id": "vORr6nDJUeCVBfwt",
+  "tags": []
+}
